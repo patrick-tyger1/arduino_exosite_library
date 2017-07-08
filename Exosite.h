@@ -28,7 +28,7 @@
 #ifndef Exosite_h
 #define Exosite_h
 
-#define ACTIVATOR_VERSION   "2.5.3"
+#define ACTIVATOR_VERSION   "2.5.4"
 
 // Select a Debug Level: 
 //#define EXOSITEDEBUG 1
@@ -54,7 +54,12 @@
 
 #include <SPI.h>
 #include <Client.h>
-#include <EEPROM.h>
+#if defined(ESP32)
+    #include <Preferences.h>
+    extern Preferences preferences;
+#else
+    #include <EEPROM.h>
+#endif
 
 
 #ifdef EXOSITEDEBUGMEM
@@ -66,7 +71,8 @@ class Exosite
   private:
     class Client* client;
     char cik[41];
-    const char *serverName = "m2.exosite.io";
+    // Set serverName to m2.exisite.io if using 
+    const char *serverName = "m2.exosite.com";
     char rxdata[200];
     char aliasList[50];
     char* varPtr;
@@ -91,7 +97,7 @@ class Exosite
     Exosite(const char *_cik, Client *_client);
     Exosite(const String _cik, Client *_client);
 
-    #if defined(ESP8266)
+    #if defined(ESP8266) or defined(ESP32)
     void begin();
     #endif
 
